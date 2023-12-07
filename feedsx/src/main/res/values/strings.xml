@@ -126,8 +126,8 @@
     <string name="enter_user_id">Enter user id</string>
     <string name="no_s_to_show">No %s to show</string>
     <string name="be_the_first_one_to_s_here">Be the first one to create %s here</string>
-    <string name="pin_this_s">Pin this %s</string>
-    <string name="unpin_this_s">Unpin this %s</string>
+    <string name="pin_this_s">Pin This %s</string>
+    <string name="unpin_this_s">Unpin This %s</string>
     <string name="you_do_not_have_permission_to_create_a_s">You do not have permission to create a %s</string>
     <string name="you_do_not_have_permission_to_comment">You do not have permission to comment</string>
     <string name="share_s">Share %s</string>
