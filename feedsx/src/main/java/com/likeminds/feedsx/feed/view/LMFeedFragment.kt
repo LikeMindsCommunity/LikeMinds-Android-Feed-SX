@@ -71,7 +71,7 @@ import com.likeminds.feedsx.utils.mediauploader.MediaUploadWorker
 import com.likeminds.feedsx.utils.model.BaseViewType
 import com.likeminds.feedsx.utils.pluralize.model.WordAction
 import kotlinx.coroutines.flow.onEach
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 class LMFeedFragment :
@@ -729,7 +729,8 @@ class LMFeedFragment :
                     root,
                     getString(
                         R.string.you_do_not_have_permission_to_create_a_s,
-                        WordAction.FIRST_LETTER_CAPITAL_SINGULAR
+                        lmFeedHelperViewModel.getPostVariable()
+                            .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
                     )
                 )
             }
