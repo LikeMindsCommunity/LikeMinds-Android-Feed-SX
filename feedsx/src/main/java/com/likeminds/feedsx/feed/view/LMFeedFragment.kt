@@ -730,7 +730,7 @@ class LMFeedFragment :
                     getString(
                         R.string.you_do_not_have_permission_to_create_a_s,
                         lmFeedHelperViewModel.getPostVariable()
-                            .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                            .pluralizeOrCapitalize(WordAction.ALL_SMALL_SINGULAR)
                     )
                 )
             }
