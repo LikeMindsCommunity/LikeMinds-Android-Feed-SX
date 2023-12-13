@@ -42,7 +42,7 @@ class LMFeedItemSelectedFilterTopicViewDataBinder(private val listener: LMFeedSe
     private fun setListeners(binding: LmFeedItemFilterSelectedTopicsBinding) {
         binding.apply {
             ivCross.setOnClickListener {
-                val position = binding.position ?: return@setOnClickListener
+                val position = binding.position
                 listener.topicCleared(position)
             }
         }

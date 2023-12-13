@@ -2,6 +2,7 @@ package com.likeminds.feedsx.post.detail.view
 
 import android.app.Activity
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.*
@@ -25,12 +26,14 @@ import com.likeminds.feedsx.post.detail.view.adapter.PostDetailReplyAdapter.Post
 import com.likeminds.feedsx.post.detail.viewmodel.PostDetailViewModel
 import com.likeminds.feedsx.post.edit.model.LMFeedEditPostExtras
 import com.likeminds.feedsx.post.edit.view.LMFeedEditPostActivity
+import com.likeminds.feedsx.post.edit.viewmodel.LMFeedHelperViewModel
 import com.likeminds.feedsx.post.viewmodel.PostActionsViewModel
 import com.likeminds.feedsx.posttypes.model.*
 import com.likeminds.feedsx.posttypes.view.adapter.PostAdapterListener
 import com.likeminds.feedsx.report.model.*
 import com.likeminds.feedsx.report.view.*
 import com.likeminds.feedsx.utils.*
+import com.likeminds.feedsx.utils.ValueUtils.pluralizeOrCapitalize
 import com.likeminds.feedsx.utils.ViewUtils.hide
 import com.likeminds.feedsx.utils.ViewUtils.show
 import com.likeminds.feedsx.utils.customview.BaseFragment
@@ -38,6 +41,7 @@ import com.likeminds.feedsx.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.feedsx.utils.membertagging.util.*
 import com.likeminds.feedsx.utils.membertagging.view.LMFeedMemberTaggingView
 import com.likeminds.feedsx.utils.model.BaseViewType
+import com.likeminds.feedsx.utils.pluralize.model.WordAction
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -58,6 +62,9 @@ class PostDetailFragment :
 
     @Inject
     lateinit var userPreferences: LMFeedUserPreferences
+
+    @Inject
+    lateinit var lmFeedHelperViewModel: LMFeedHelperViewModel
 
     private lateinit var postDetailExtras: PostDetailExtras
 
@@ -127,8 +134,7 @@ class PostDetailFragment :
 
     override fun onPause() {
         super.onPause()
-        // removes the player and destroys the [postVideoAutoPlayHelper]
-        postVideoAutoPlayHelper.destroy()
+        destroyAutoPlayer()
     }
 
     override fun setUpViews() {
@@ -142,6 +148,15 @@ class PostDetailFragment :
         initSwipeRefreshLayout()
         initCommentEditText()
         initListeners()
+    }
+
+    override fun setPostVariable() {
+        super.setPostVariable()
+        val postAsVariable = lmFeedHelperViewModel.getPostVariable()
+
+        //post header
+        (requireActivity() as PostDetailActivity).binding.tvToolbarTitle.text =
+            postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
     }
 
     // fetches post data to set initial data
@@ -382,7 +397,11 @@ class PostDetailFragment :
 
             ViewUtils.showShortToast(
                 requireContext(),
-                getString(R.string.post_deleted)
+                getString(
+                    R.string.s_deleted,
+                    lmFeedHelperViewModel.getPostVariable()
+                        .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                )
             )
             requireActivity().finish()
         }
@@ -391,10 +410,21 @@ class PostDetailFragment :
         postActionsViewModel.pinPostResponse.observe(viewLifecycleOwner) {
             val post = mPostDetailAdapter[postDataPosition] as PostViewData
 
+            val postAsVariable = lmFeedHelperViewModel.getPostVariable()
             if (post.isPinned) {
-                ViewUtils.showShortToast(requireContext(), getString(R.string.post_pinned_to_top))
+                ViewUtils.showShortToast(
+                    requireContext(), getString(
+                        R.string.s_pinned_to_top,
+                        postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                    )
+                )
             } else {
-                ViewUtils.showShortToast(requireContext(), getString(R.string.post_unpinned))
+                ViewUtils.showShortToast(
+                    requireContext(), getString(
+                        R.string.s_unpinned,
+                        postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                    )
+                )
             }
         }
     }
@@ -694,12 +724,6 @@ class PostDetailFragment :
         postVideoAutoPlayHelper.playIfPostVisible()
     }
 
-    // removes the old player and refreshes auto play
-    private fun refreshAutoPlayer() {
-        postVideoAutoPlayHelper.removePlayer()
-        postVideoAutoPlayHelper.playIfPostVisible()
-    }
-
     /*
     * UI Block
     */
@@ -742,6 +766,7 @@ class PostDetailFragment :
         val deleteExtras = DeleteExtras.Builder()
             .postId(postId)
             .entityType(DELETE_TYPE_POST)
+            .postAsVariable(lmFeedHelperViewModel.getPostVariable())
             .build()
 
         showDeleteDialog(creatorId, deleteExtras)
@@ -1031,7 +1056,15 @@ class PostDetailFragment :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data?.getStringExtra(LMFeedReportFragment.REPORT_RESULT)
-                LMFeedReportSuccessDialog(data ?: "").show(
+
+                val entityType = if (data == "Post") {
+                    lmFeedHelperViewModel.getPostVariable()
+                        .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                } else {
+                    data
+                }
+
+                LMFeedReportSuccessDialog(entityType ?: "").show(
                     childFragmentManager,
                     LMFeedReportSuccessDialog.TAG
                 )
@@ -1077,12 +1110,11 @@ class PostDetailFragment :
                 viewModel.getComment(post.id, postDetailExtras.commentId ?: "", 1)
             } else {
                 //scroll to that comment
-                binding.rvPostDetails.scrollToPosition(index)
+                scrollToPositionWithOffset(index, 0)
             }
         } else {
-            binding.rvPostDetails.scrollToPosition(postDataPosition)
+            scrollToPositionWithOffset(postDataPosition, 0)
         }
-        refreshAutoPlayer()
     }
 
     // updates the post and add comments to adapter
@@ -1094,8 +1126,6 @@ class PostDetailFragment :
         mPostDetailAdapter.update(postDataPosition, post)
         // adds the paginated comments
         mPostDetailAdapter.addAll(post.replies.toList())
-
-        refreshAutoPlayer()
     }
 
     // refreshes the whole post detail screen
@@ -1126,7 +1156,7 @@ class PostDetailFragment :
             postEvent.notify(Pair(newViewData.id, newViewData))
 
             //call api
-            postActionsViewModel.likePost(newViewData.id)
+            postActionsViewModel.likePost(newViewData.id, !item.isLiked)
             //update recycler
             mPostDetailAdapter.update(position, newViewData)
         }
@@ -1144,6 +1174,24 @@ class PostDetailFragment :
 
             // notifies the subscribers about the change
             postEvent.notify(Pair(newViewData.id, newViewData))
+
+            //create toast message
+            val postAsVariable = lmFeedHelperViewModel.getPostVariable()
+            val toastMessage = if (!item.isSaved) {
+                getString(
+                    R.string.s_saved,
+                    postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                )
+            } else {
+                getString(
+                    R.string.s_unsaved,
+                    postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                )
+            }
+
+            //show toast
+            Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
+
 
             //call api
             postActionsViewModel.savePost(newViewData.id)
@@ -1254,7 +1302,7 @@ class PostDetailFragment :
             //add comment to adapter
             mPostDetailAdapter.add(commentsStartPosition, comment)
             //scroll to the comment
-            binding.rvPostDetails.scrollToPosition(commentsStartPosition)
+            scrollToPositionWithOffset(commentsStartPosition, 0)
         } else {
             val index = indexAndComment.first
             val adapterComment = indexAndComment.second
@@ -1295,7 +1343,7 @@ class PostDetailFragment :
             .build()
 
         //call api
-        viewModel.likeComment(newViewData.postId, newViewData.id)
+        viewModel.likeComment(newViewData.postId, newViewData.id, !comment.isLiked)
         //update recycler
         mPostDetailAdapter.update(position, newViewData)
     }
@@ -1335,7 +1383,7 @@ class PostDetailFragment :
             .build()
 
         //call api
-        viewModel.likeComment(newViewData.postId, updatedReply.id)
+        viewModel.likeComment(newViewData.postId, updatedReply.id, !replyViewData.isLiked)
         //update recycler
         mPostDetailAdapter.update(position, newViewData)
     }
@@ -1436,7 +1484,13 @@ class PostDetailFragment :
         val newPinPostMenuItem =
             pinPostMenuItem.toBuilder()
                 .id(UNPIN_POST_MENU_ITEM_ID)
-                .title(getString(R.string.unpin_this_post))
+                .title(
+                    getString(
+                        R.string.unpin_this_s,
+                        lmFeedHelperViewModel.getPostVariable()
+                            .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                    )
+                )
                 .build()
         menuItems[pinPostIndex] = newPinPostMenuItem
 
@@ -1473,7 +1527,13 @@ class PostDetailFragment :
         val unPinPostMenuItem = menuItems[unPinPostIndex]
         val newUnPinPostMenuItem =
             unPinPostMenuItem.toBuilder().id(PIN_POST_MENU_ITEM_ID)
-                .title(getString(R.string.pin_this_post))
+                .title(
+                    getString(
+                        R.string.pin_this_s,
+                        lmFeedHelperViewModel.getPostVariable()
+                            .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                    )
+                )
                 .build()
         menuItems[unPinPostIndex] = newUnPinPostMenuItem
 
@@ -1625,9 +1685,7 @@ class PostDetailFragment :
     // callback when +x more text is clicked to see more documents
     override fun onMultipleDocumentsExpanded(postData: PostViewData, position: Int) {
         if (position == mPostDetailAdapter.items().size - 1) {
-            binding.rvPostDetails.post {
-                scrollToPositionWithOffset(position, 75)
-            }
+            scrollToPositionWithOffset(position, 75)
         }
 
         mPostDetailAdapter.update(
@@ -1651,7 +1709,8 @@ class PostDetailFragment :
         ShareUtils.sharePost(
             requireContext(),
             postId,
-            ShareUtils.domain
+            ShareUtils.domain,
+            lmFeedHelperViewModel.getPostVariable()
         )
         val post = mPostDetailAdapter[postDataPosition] as PostViewData
         postActionsViewModel.sendPostShared(post)
@@ -1715,10 +1774,25 @@ class PostDetailFragment :
      * @param offset value with which to scroll
      */
     private fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        val px = (ViewUtils.dpToPx(offset) * 1.5).toInt()
-        (binding.rvPostDetails.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(
-            position,
-            px
-        )
+        binding.rvPostDetails.post {
+            val px = (ViewUtils.dpToPx(offset) * 1.5).toInt()
+            (binding.rvPostDetails.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(
+                position,
+                px
+            )
+        }
+    }
+
+    // removes the player and destroys the [postVideoAutoPlayHelper]
+    private fun destroyAutoPlayer() {
+        if (::postVideoAutoPlayHelper.isInitialized) {
+            postVideoAutoPlayHelper.detachScrollListenerForVideo()
+            postVideoAutoPlayHelper.destroy()
+        }
+    }
+
+    override fun doCleanup() {
+        super.doCleanup()
+        destroyAutoPlayer()
     }
 }

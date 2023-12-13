@@ -64,5 +64,5 @@ dependencies {
     implementation feed_deps.facebook.shimmer
 
     // feed-sdk
-    implementation 'community.likeminds:likemindsfeed:1.6.1'
+    implementation 'community.likeminds:likemindsfeed:1.7.0'
 }

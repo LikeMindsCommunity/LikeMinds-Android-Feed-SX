@@ -38,8 +38,8 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="15dp"
-                    android:padding="4dp"
                     android:foreground="?selectableItemBackgroundBorderless"
+                    android:padding="4dp"
                     android:tint="@{toolbarColor}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,6 @@
                     android:ellipsize="end"
                     android:includeFontPadding="false"
                     android:maxLines="1"
-                    android:text="@string/post"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     app:fontType="medium"
@@ -63,7 +62,8 @@
                     app:layout_constraintStart_toEndOf="@+id/iv_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed"
-                    app:textType="title" />
+                    app:textType="title"
+                    tools:text="Post" />
 
                 <com.likeminds.feedsx.branding.customview.LMFeedTextView
                     android:id="@+id/tv_toolbar_sub_title"

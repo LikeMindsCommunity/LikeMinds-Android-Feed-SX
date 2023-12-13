@@ -17,6 +17,7 @@
 -keep class com.likeminds.feedsx.utils.memberrights.model.** { *; }
 -keep class com.likeminds.feedsx.utils.membertagging.model.** { *; }
 -keep class com.likeminds.feedsx.utils.model.** { *; }
+-keep class com.likeminds.feedsx.utils.pluralize.model.** { *; }
 -keep class androidx.databinding.DataBindingComponent { *; }
 
 # for parcelable classes

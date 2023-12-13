@@ -59,18 +59,9 @@ class LMFeedCreatePostActivity : BaseAppCompatActivity() {
         binding.ivBack.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.label) {
-                LMFeedCreatePostFragment::class.simpleName -> {
-                    binding.toolbar.setTitle(R.string.create_a_post)
-                }
-            }
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
     }
-
 }

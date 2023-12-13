@@ -45,7 +45,7 @@ class PostActionsViewModel @Inject constructor(
     }
 
     //for like/unlike a post
-    fun likePost(postId: String) {
+    fun likePost(postId: String, postLiked: Boolean) {
         viewModelScope.launchIO {
             val request = LikePostRequest.Builder()
                 .postId(postId)
@@ -55,7 +55,9 @@ class PostActionsViewModel @Inject constructor(
             val response = lmFeedClient.likePost(request)
 
             //check for error
-            if (!response.success) {
+            if (response.success) {
+                sendPostLikedEvent(postId, postLiked)
+            } else {
                 errorMessageChannel.send(
                     ErrorMessageEvent.LikePost(
                         postId,
@@ -204,6 +206,25 @@ class PostActionsViewModel @Inject constructor(
                 "created_by_uuid" to postCreatorUUID,
                 LMFeedAnalytics.Keys.POST_ID to post.id,
                 "post_type" to postType,
+            )
+        )
+    }
+
+    /**
+     * Triggers when the current user likes/unlikes a post
+     */
+    private fun sendPostLikedEvent(postId: String, postLiked: Boolean) {
+        val event = if (postLiked) {
+            LMFeedAnalytics.Events.POST_LIKED
+        } else {
+            LMFeedAnalytics.Events.POST_UNLIKED
+        }
+
+        LMFeedAnalytics.track(
+            event,
+            mapOf(
+                LMFeedAnalytics.Keys.UUID to userPreferences.getUUID(),
+                LMFeedAnalytics.Keys.POST_ID to postId
             )
         )
     }

@@ -72,14 +72,6 @@ class PostDetailActivity : BaseAppCompatActivity() {
 
             //Toolbar
             initActionBar()
-
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                when (destination.label) {
-                    PostDetailFragment::class.simpleName -> {
-                        binding.toolbar.setTitle(R.string.post)
-                    }
-                }
-            }
         } else {
             redirectActivity()
         }

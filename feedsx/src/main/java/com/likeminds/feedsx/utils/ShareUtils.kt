@@ -16,10 +16,11 @@ object ShareUtils {
     fun sharePost(
         context: Context,
         postId: String,
-        domain: String
+        domain: String,
+        postAsVariable: String
     ) {
         val shareLink = "$domain/post?post_id=$postId"
-        val shareTitle = context.getString(R.string.share_post)
+        val shareTitle = context.getString(R.string.share_s, postAsVariable)
         shareLink(context, shareLink, shareTitle)
     }
 

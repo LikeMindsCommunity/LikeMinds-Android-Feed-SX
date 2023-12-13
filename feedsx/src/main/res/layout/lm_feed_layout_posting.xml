@@ -29,7 +29,7 @@
             android:ellipsize="end"
             android:lineHeight="16dp"
             android:maxEms="15"
-            android:text="@string/posting"
+            android:text="@string/creating_s"
             android:textColor="@color/dark_grey"
             android:textSize="14sp"
             app:fontType="regular"

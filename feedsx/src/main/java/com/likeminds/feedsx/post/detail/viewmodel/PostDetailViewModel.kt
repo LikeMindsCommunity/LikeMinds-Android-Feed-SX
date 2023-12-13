@@ -125,7 +125,7 @@ class PostDetailViewModel @Inject constructor(
     }
 
     //for like/unlike a comment
-    fun likeComment(postId: String, commentId: String) {
+    fun likeComment(postId: String, commentId: String, commentLiked: Boolean) {
         viewModelScope.launchIO {
             val request = LikeCommentRequest.Builder()
                 .postId(postId)
@@ -137,7 +137,9 @@ class PostDetailViewModel @Inject constructor(
             val response = lmFeedClient.likeComment(request)
 
             //check for error
-            if (!response.success) {
+            if (response.success) {
+                sendCommentLikedEvent(postId, commentId, commentLiked)
+            } else {
                 errorMessageChannel.send(
                     ErrorMessageEvent.LikeComment(
                         commentId,
@@ -478,7 +480,7 @@ class PostDetailViewModel @Inject constructor(
             .postId(postId)
             .user(
                 UserViewData.Builder()
-                    .name(userPreferences.getUserName() ?: "")
+                    .name(userPreferences.getUserName())
                     .build()
             )
             .createdAt(createdAt)
@@ -488,5 +490,29 @@ class PostDetailViewModel @Inject constructor(
             .parentId(parentCommentId)
             .level(level)
             .build()
+    }
+
+    /**
+     * Triggers when the current user likes/unlikes a comment
+     */
+    private fun sendCommentLikedEvent(
+        postId: String,
+        commentId: String,
+        commentLiked: Boolean
+    ) {
+        val event = if (commentLiked) {
+            LMFeedAnalytics.Events.COMMENT_LIKED
+        } else {
+            LMFeedAnalytics.Events.COMMENT_UNLIKED
+        }
+
+        LMFeedAnalytics.track(
+            event,
+            mapOf(
+                LMFeedAnalytics.Keys.UUID to userPreferences.getUUID(),
+                LMFeedAnalytics.Keys.POST_ID to postId,
+                LMFeedAnalytics.Keys.COMMENT_ID to commentId,
+            )
+        )
     }
 }

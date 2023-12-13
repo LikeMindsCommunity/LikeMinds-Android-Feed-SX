@@ -70,7 +70,6 @@ class LMFeedTopicSelectionFragment :
         super.observeData()
 
         viewModel.topicsViewData.observe(viewLifecycleOwner) { response ->
-            val page = response.first
             val topics = response.second
 
 

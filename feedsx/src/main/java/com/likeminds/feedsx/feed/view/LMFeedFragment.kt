@@ -12,6 +12,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -61,14 +62,16 @@ import com.likeminds.feedsx.topic.model.LMFeedTopicSelectionResultExtras
 import com.likeminds.feedsx.topic.view.LMFeedTopicSelectionActivity
 import com.likeminds.feedsx.topic.view.LMFeedTopicSelectionActivity.Companion.TOPIC_SELECTION_RESULT_EXTRAS
 import com.likeminds.feedsx.utils.*
+import com.likeminds.feedsx.utils.ValueUtils.pluralizeOrCapitalize
 import com.likeminds.feedsx.utils.ViewUtils.hide
 import com.likeminds.feedsx.utils.ViewUtils.show
 import com.likeminds.feedsx.utils.customview.BaseFragment
 import com.likeminds.feedsx.utils.databinding.ImageBindingUtil
 import com.likeminds.feedsx.utils.mediauploader.MediaUploadWorker
 import com.likeminds.feedsx.utils.model.BaseViewType
+import com.likeminds.feedsx.utils.pluralize.model.WordAction
 import kotlinx.coroutines.flow.onEach
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 class LMFeedFragment :
@@ -178,6 +181,29 @@ class LMFeedFragment :
         }
     }
 
+    override fun setPostVariable() {
+        super.setPostVariable()
+        val postAsVariable = lmFeedHelperViewModel.getPostVariable()
+        binding.apply {
+            //new post fab
+            newPostButton.text = getString(
+                R.string.new_s,
+                postAsVariable.pluralizeOrCapitalize(WordAction.ALL_CAPITAL_SINGULAR)
+            )
+
+            //no post layout
+            initLayoutNoPostText()
+
+            //posting layout
+            layoutPosting.tvPosting.text = getString(
+                R.string.creating_s,
+                postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+            )
+
+
+        }
+    }
+
     override fun observeData() {
         super.observeData()
         observePosting()
@@ -220,6 +246,10 @@ class LMFeedFragment :
             binding.layoutAllTopics.root.isVisible = showTopicFilter
         }
 
+        lmFeedHelperViewModel.postVariable.observe(viewLifecycleOwner) { _ ->
+            setPostVariable()
+        }
+
         // observes deletePostResponse LiveData
         postActionsViewModel.deletePostResponse.observe(viewLifecycleOwner) { postId ->
             val indexToRemove = getIndexAndPostFromAdapter(postId)?.first ?: return@observe
@@ -228,17 +258,32 @@ class LMFeedFragment :
             refreshAutoPlayer()
             ViewUtils.showShortToast(
                 requireContext(),
-                getString(R.string.post_deleted)
+                getString(
+                    R.string.s_deleted,
+                    lmFeedHelperViewModel.getPostVariable()
+                        .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                )
             )
         }
 
         // observes pinPostResponse LiveData
         postActionsViewModel.pinPostResponse.observe(viewLifecycleOwner) { postId ->
             val post = getIndexAndPostFromAdapter(postId)?.second ?: return@observe
+            val postAsVariable = lmFeedHelperViewModel.getPostVariable()
             if (post.isPinned) {
-                ViewUtils.showShortToast(requireContext(), getString(R.string.post_pinned_to_top))
+                ViewUtils.showShortToast(
+                    requireContext(), getString(
+                        R.string.s_pinned_to_top,
+                        postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                    )
+                )
             } else {
-                ViewUtils.showShortToast(requireContext(), getString(R.string.post_unpinned))
+                ViewUtils.showShortToast(
+                    requireContext(), getString(
+                        R.string.s_unpinned,
+                        postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                    )
+                )
             }
         }
 
@@ -259,6 +304,7 @@ class LMFeedFragment :
         setUserImage(user)
         viewModel.getUnreadNotificationCount()
         lmFeedHelperViewModel.getAllTopics(false)
+        lmFeedHelperViewModel.getFeedMetaData()
         viewModel.getUniversalFeed(
             1,
             viewModel.getTopicIdsFromAdapterList(mSelectedTopicAdapter.items())
@@ -360,7 +406,14 @@ class LMFeedFragment :
                 // when the post data comes from api response
                 is LMFeedViewModel.PostDataEvent.PostResponseData -> {
                     binding.apply {
-                        ViewUtils.showShortToast(requireContext(), getString(R.string.post_created))
+                        ViewUtils.showShortToast(
+                            requireContext(),
+                            getString(
+                                R.string.s_created,
+                                lmFeedHelperViewModel.getPostVariable()
+                                    .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                            )
+                        )
                         refreshFeed()
                         removePostingView()
                     }
@@ -574,8 +627,7 @@ class LMFeedFragment :
 
     override fun onPause() {
         super.onPause()
-        // removes the player and destroys the [postVideoAutoPlayHelper]
-        postVideoAutoPlayHelper.destroy()
+        destroyAutoPlayer()
     }
 
     override fun onDestroy() {
@@ -656,7 +708,11 @@ class LMFeedFragment :
                 if (alreadyPosting) {
                     ViewUtils.showShortToast(
                         requireContext(),
-                        getString(R.string.a_post_is_already_uploading)
+                        getString(
+                            R.string.a_s_is_already_uploading,
+                            lmFeedHelperViewModel.getPostVariable()
+                                .pluralizeOrCapitalize(WordAction.ALL_SMALL_SINGULAR)
+                        )
                     )
                 } else {
                     // sends post creation started event
@@ -671,7 +727,11 @@ class LMFeedFragment :
             } else {
                 ViewUtils.showShortSnack(
                     root,
-                    getString(R.string.you_do_not_have_permission_to_create_a_post)
+                    getString(
+                        R.string.you_do_not_have_permission_to_create_a_s,
+                        lmFeedHelperViewModel.getPostVariable()
+                            .pluralizeOrCapitalize(WordAction.ALL_SMALL_SINGULAR)
+                    )
                 )
             }
         }
@@ -749,6 +809,25 @@ class LMFeedFragment :
         }
     }
 
+    //set text as per post as variable
+    private fun initLayoutNoPostText() {
+        val postAsVariable = lmFeedHelperViewModel.getPostVariable()
+        binding.layoutNoPost.apply {
+            //heading
+            tvNoPostHeading.text = postAsVariable.pluralizeOrCapitalize(WordAction.ALL_SMALL_PLURAL)
+
+            //subheading
+            tvNoPostSubHeading.text =
+                postAsVariable.pluralizeOrCapitalize(WordAction.ALL_SMALL_SINGULAR)
+
+            //fab
+            fabNewPost.text = getString(
+                R.string.new_s,
+                postAsVariable.pluralizeOrCapitalize(WordAction.ALL_CAPITAL_SINGULAR)
+            )
+        }
+    }
+
 
     private val topicSelectionLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -776,7 +855,7 @@ class LMFeedFragment :
                 layoutSelectedTopics.root.hide()
 
                 //call api
-                ProgressHelper.showProgress(binding.progressBar,true)
+                ProgressHelper.showProgress(binding.progressBar, true)
                 viewModel.getUniversalFeed(1, null)
             } else {
                 //show layouts accordingly
@@ -788,7 +867,7 @@ class LMFeedFragment :
                 mSelectedTopicAdapter.replace(selectedTopics)
 
                 //call api
-                ProgressHelper.showProgress(binding.progressBar,true)
+                ProgressHelper.showProgress(binding.progressBar, true)
                 viewModel.getUniversalFeed(
                     1,
                     viewModel.getTopicIdsFromAdapterList(mSelectedTopicAdapter.items())
@@ -826,7 +905,7 @@ class LMFeedFragment :
             //call apis
             mScrollListener.resetData()
             mPostAdapter.clearAndNotify()
-            ProgressHelper.showProgress(binding.progressBar,true)
+            ProgressHelper.showProgress(binding.progressBar, true)
             viewModel.getUniversalFeed(
                 1,
                 viewModel.getTopicIdsFromAdapterList(mSelectedTopicAdapter.items())
@@ -839,7 +918,7 @@ class LMFeedFragment :
         //call api
         mSelectedTopicAdapter.clearAndNotify()
         mScrollListener.resetData()
-        ProgressHelper.showProgress(binding.progressBar,true)
+        ProgressHelper.showProgress(binding.progressBar, true)
         viewModel.getUniversalFeed(1, null)
 
         //show layout accordingly
@@ -994,6 +1073,24 @@ class LMFeedFragment :
                 .isSaved(!item.isSaved)
                 .build()
 
+
+            //create toast message
+            val postAsVariable = lmFeedHelperViewModel.getPostVariable()
+            val toastMessage = if (!item.isSaved) {
+                getString(
+                    R.string.s_saved,
+                    postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                )
+            } else {
+                getString(
+                    R.string.s_unsaved,
+                    postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                )
+            }
+
+            //show toast
+            Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
+
             //call api
             postActionsViewModel.savePost(newViewData.id)
 
@@ -1022,7 +1119,7 @@ class LMFeedFragment :
                 .build()
 
             //call api
-            postActionsViewModel.likePost(newViewData.id)
+            postActionsViewModel.likePost(newViewData.id, !item.isLiked)
             //update recycler
             mPostAdapter.update(position, newViewData)
         }
@@ -1121,7 +1218,8 @@ class LMFeedFragment :
         ShareUtils.sharePost(
             requireContext(),
             postId,
-            ShareUtils.domain
+            ShareUtils.domain,
+            lmFeedHelperViewModel.getPostVariable()
         )
         val post = getIndexAndPostFromAdapter(postId)?.second ?: return
         postActionsViewModel.sendPostShared(post)
@@ -1132,6 +1230,7 @@ class LMFeedFragment :
         val deleteExtras = DeleteExtras.Builder()
             .postId(postId)
             .entityType(DELETE_TYPE_POST)
+            .postAsVariable(lmFeedHelperViewModel.getPostVariable())
             .build()
 
         if (postCreatorUUID == postActionsViewModel.getUUID()) {
@@ -1172,7 +1271,13 @@ class LMFeedFragment :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data?.getStringExtra(LMFeedReportFragment.REPORT_RESULT)
-                LMFeedReportSuccessDialog(data ?: "").show(
+                val entityType = if (data == "Post") {
+                    lmFeedHelperViewModel.getPostVariable()
+                        .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                } else {
+                    data
+                }
+                LMFeedReportSuccessDialog(entityType ?: "").show(
                     childFragmentManager,
                     LMFeedReportSuccessDialog.TAG
                 )
@@ -1199,7 +1304,13 @@ class LMFeedFragment :
         val pinPostMenuItem = menuItems[pinPostIndex]
         val newPinPostMenuItem =
             pinPostMenuItem.toBuilder().id(UNPIN_POST_MENU_ITEM_ID)
-                .title(getString(R.string.unpin_this_post))
+                .title(
+                    getString(
+                        R.string.unpin_this_s,
+                        lmFeedHelperViewModel.getPostVariable()
+                            .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                    )
+                )
                 .build()
         menuItems[pinPostIndex] = newPinPostMenuItem
 
@@ -1236,7 +1347,13 @@ class LMFeedFragment :
         val unPinPostMenuItem = menuItems[unPinPostIndex]
         val newUnPinPostMenuItem =
             unPinPostMenuItem.toBuilder().id(PIN_POST_MENU_ITEM_ID)
-                .title(getString(R.string.pin_this_post))
+                .title(
+                    getString(
+                        R.string.pin_this_s,
+                        lmFeedHelperViewModel.getPostVariable()
+                            .pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+                    )
+                )
                 .build()
         menuItems[unPinPostIndex] = newUnPinPostMenuItem
 
@@ -1279,9 +1396,7 @@ class LMFeedFragment :
     // shows all attachment documents in list view and updates [isExpanded]
     override fun onMultipleDocumentsExpanded(postData: PostViewData, position: Int) {
         if (position == mPostAdapter.items().size - 1) {
-            binding.recyclerView.post {
-                scrollToPositionWithOffset(position)
-            }
+            scrollToPositionWithOffset(position)
         }
 
         mPostAdapter.update(
@@ -1341,10 +1456,25 @@ class LMFeedFragment :
      * @param position Index of the item to scroll to
      */
     private fun scrollToPositionWithOffset(position: Int) {
-        val px = (ViewUtils.dpToPx(75) * 1.5).toInt()
-        (binding.recyclerView.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(
-            position,
-            px
-        )
+        binding.recyclerView.post {
+            val px = (ViewUtils.dpToPx(75) * 1.5).toInt()
+            (binding.recyclerView.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(
+                position,
+                px
+            )
+        }
+    }
+
+    // removes the player and destroys the [postVideoAutoPlayHelper]
+    private fun destroyAutoPlayer() {
+        if (::postVideoAutoPlayHelper.isInitialized) {
+            postVideoAutoPlayHelper.detachScrollListenerForVideo()
+            postVideoAutoPlayHelper.destroy()
+        }
+    }
+
+    override fun doCleanup() {
+        super.doCleanup()
+        destroyAutoPlayer()
     }
 }

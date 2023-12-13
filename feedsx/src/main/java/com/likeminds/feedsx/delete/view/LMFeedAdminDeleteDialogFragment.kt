@@ -11,8 +11,10 @@ import com.likeminds.feedsx.branding.model.LMFeedBranding
 import com.likeminds.feedsx.databinding.LmFeedDialogFragmentAdminDeleteBinding
 import com.likeminds.feedsx.delete.model.*
 import com.likeminds.feedsx.utils.ExtrasUtil
+import com.likeminds.feedsx.utils.ValueUtils.pluralizeOrCapitalize
 import com.likeminds.feedsx.utils.customview.BaseDialogFragment
 import com.likeminds.feedsx.utils.emptyExtrasException
+import com.likeminds.feedsx.utils.pluralize.model.WordAction
 
 //when cm deletes others user post
 class LMFeedAdminDeleteDialogFragment :
@@ -72,8 +74,14 @@ class LMFeedAdminDeleteDialogFragment :
     // sets data as per content type [COMMENT/POST]
     private fun initView() {
         if (deleteExtras.entityType == DELETE_TYPE_POST) {
-            binding.tvTitle.text = getString(R.string.delete_post_question)
-            binding.tvDescription.text = getString(R.string.delete_post_message)
+            binding.tvTitle.text = getString(
+                R.string.delete_s_question,
+                deleteExtras.postAsVariable.pluralizeOrCapitalize(WordAction.ALL_SMALL_SINGULAR)
+            )
+            binding.tvDescription.text = getString(
+                R.string.delete_s_message,
+                deleteExtras.postAsVariable.pluralizeOrCapitalize(WordAction.ALL_SMALL_SINGULAR)
+            )
         } else {
             binding.tvTitle.text = getString(R.string.delete_comment_question)
             binding.tvDescription.text = getString(R.string.delete_comment_message)

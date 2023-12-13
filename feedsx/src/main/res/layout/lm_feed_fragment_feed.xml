@@ -219,7 +219,7 @@
             android:gravity="center"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:text="@string/new_post"
+            android:text="@string/new_s"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="15sp"

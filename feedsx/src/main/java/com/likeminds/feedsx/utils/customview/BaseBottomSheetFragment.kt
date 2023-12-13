@@ -48,6 +48,10 @@ abstract class BaseBottomSheetFragment<B : ViewBinding, VM : ViewModel> :
         //implement this to attach screen to dagger sub-component
     }
 
+    protected open fun setPostVariable() {
+        //This function can be called in case of set post as variable in any view
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         attachDagger()
@@ -84,6 +88,7 @@ abstract class BaseBottomSheetFragment<B : ViewBinding, VM : ViewModel> :
         if (_binding == null) {
             _binding = getViewBinding()
         }
+        setPostVariable()
         return binding.root
     }
 

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.messaging.FirebaseMessaging
 import com.likeminds.feedsx.SDKApplication.Companion.LOG_TAG
+import com.likeminds.feedsx.feed.ConfigurationRepository
 import com.likeminds.feedsx.feed.UserWithRightsRepository
 import com.likeminds.feedsx.posttypes.model.UserViewData
 import com.likeminds.feedsx.utils.LMFeedUserPreferences
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 class InitiateViewModel @Inject constructor(
     private val userPreferences: LMFeedUserPreferences,
-    private val userWithRightsRepository: UserWithRightsRepository
+    private val userWithRightsRepository: UserWithRightsRepository,
+    private val configurationRepository: ConfigurationRepository
 ) : ViewModel() {
 
     private val lmFeedClient = LMFeedClient.getInstance()
@@ -92,8 +94,9 @@ class InitiateViewModel @Inject constructor(
                     userPreferences.saveUserUniqueId(id)
                     userPreferences.saveUUID(uuid)
 
-                    //post the user response in LiveData
-                    _userResponse.postValue(ViewDataConverter.convertUser(user))
+                    val userViewData = ViewDataConverter.convertUser(user)
+                    //get community configuration
+                    getCommunityConfiguration(userViewData)
                 }
             } else {
                 _initiateErrorMessage.postValue(initiateResponse.errorMessage)
@@ -188,6 +191,31 @@ class InitiateViewModel @Inject constructor(
 
             //call api
             lmFeedClient.registerDevice(request)
+        }
+    }
+
+    /**
+     * get community configurations
+     * and save it local db
+     */
+    private fun getCommunityConfiguration(userViewData: UserViewData) {
+        viewModelScope.launchIO {
+            val response = lmFeedClient.getCommunityConfiguration()
+            if (response.success) {
+                val configurations = response.data?.configurations ?: return@launchIO
+
+                val configurationEntities = configurations.map { configuration ->
+                    ViewDataConverter.createConfigurationEntity(configuration)
+                }
+
+                //add configuration to db
+                configurationRepository.insertConfigurations(configurationEntities)
+
+                //post the user response in LiveData
+                _userResponse.postValue(userViewData)
+            } else {
+                Log.d(LOG_TAG, "community/configuration failed -> ${response.errorMessage}")
+            }
         }
     }
 

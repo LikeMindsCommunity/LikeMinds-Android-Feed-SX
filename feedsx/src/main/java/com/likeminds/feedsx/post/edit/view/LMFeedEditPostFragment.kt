@@ -43,6 +43,7 @@ import com.likeminds.feedsx.topic.view.LMFeedTopicSelectionActivity
 import com.likeminds.feedsx.utils.*
 import com.likeminds.feedsx.utils.ValueUtils.getUrlIfExist
 import com.likeminds.feedsx.utils.ValueUtils.isImageValid
+import com.likeminds.feedsx.utils.ValueUtils.pluralizeOrCapitalize
 import com.likeminds.feedsx.utils.ViewUtils.hide
 import com.likeminds.feedsx.utils.ViewUtils.show
 import com.likeminds.feedsx.utils.customview.BaseFragment
@@ -54,6 +55,7 @@ import com.likeminds.feedsx.utils.membertagging.model.UserTagViewData
 import com.likeminds.feedsx.utils.membertagging.util.*
 import com.likeminds.feedsx.utils.membertagging.view.LMFeedMemberTaggingView
 import com.likeminds.feedsx.utils.model.*
+import com.likeminds.feedsx.utils.pluralize.model.WordAction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
@@ -158,6 +160,21 @@ class LMFeedEditPostFragment :
         initToolbar()
         fetchPost()
         initPostSaveListener()
+    }
+
+    override fun setPostVariable() {
+        super.setPostVariable()
+        val postAsVariable = lmFeedHelperViewModel.getPostVariable()
+
+        binding.apply {
+            //toolbar title
+            //post header
+            tvToolbarTitle.text = getString(
+                R.string.edit_s,
+                postAsVariable.pluralizeOrCapitalize(WordAction.FIRST_LETTER_CAPITAL_SINGULAR)
+            )
+
+        }
     }
 
     // sets the binding variables
@@ -269,9 +286,10 @@ class LMFeedEditPostFragment :
         //create message string
         val topicNameString = disabledTopics.joinToString(", ") { it.name }
         val firstLineMessage = resources.getQuantityString(
-            R.plurals.topic_disabled_message,
+            R.plurals.topic_disabled_message_s,
             noOfDisabledTopics,
-            noOfDisabledTopics
+            lmFeedHelperViewModel.getPostVariable()
+                .pluralizeOrCapitalize(WordAction.ALL_SMALL_SINGULAR)
         )
         val finalMessage = "$firstLineMessage \n $topicNameString"
 

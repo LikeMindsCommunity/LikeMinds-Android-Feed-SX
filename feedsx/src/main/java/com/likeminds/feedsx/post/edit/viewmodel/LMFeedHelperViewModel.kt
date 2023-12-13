@@ -1,7 +1,9 @@
 package com.likeminds.feedsx.post.edit.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.likeminds.feedsx.LMFeedAnalytics
+import com.likeminds.feedsx.feed.ConfigurationRepository
 import com.likeminds.feedsx.feed.UserWithRightsRepository
 import com.likeminds.feedsx.posttypes.model.LinkOGTagsViewData
 import com.likeminds.feedsx.posttypes.model.UserViewData
@@ -10,16 +12,19 @@ import com.likeminds.feedsx.utils.ViewDataConverter
 import com.likeminds.feedsx.utils.coroutine.launchIO
 import com.likeminds.feedsx.utils.membertagging.model.UserTagViewData
 import com.likeminds.feedsx.utils.membertagging.util.MemberTaggingUtil
+import com.likeminds.feedsx.utils.model.ConfigurationType
 import com.likeminds.likemindsfeed.LMFeedClient
 import com.likeminds.likemindsfeed.LMResponse
 import com.likeminds.likemindsfeed.helper.model.*
 import com.likeminds.likemindsfeed.topic.model.GetTopicRequest
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import org.json.JSONObject
 import javax.inject.Inject
 
 class LMFeedHelperViewModel @Inject constructor(
     private val userWithRightsRepository: UserWithRightsRepository,
+    private val configurationRepository: ConfigurationRepository,
     private val userPreferences: LMFeedUserPreferences
 ) : ViewModel() {
 
@@ -33,6 +38,11 @@ class LMFeedHelperViewModel @Inject constructor(
 
     private val _showTopicFilter = MutableLiveData<Boolean>()
     val showTopicFilter: LiveData<Boolean> = _showTopicFilter
+
+    private var postAsVariable: String = POST_KEY
+
+    private val _postVariable = MutableLiveData<String>(POST_KEY)
+    val postVariable: LiveData<String> = _postVariable
 
     /**
      * [taggingData] contains first -> page called
@@ -49,6 +59,15 @@ class LMFeedHelperViewModel @Inject constructor(
 
     private val errorEventChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorEventFlow = errorEventChannel.receiveAsFlow()
+
+    companion object {
+        const val POST_KEY = "post"
+    }
+
+    init {
+        //get feed meta data
+        getFeedMetaData()
+    }
 
     // calls DecodeUrl API
     fun decodeUrl(url: String) {
@@ -153,6 +172,34 @@ class LMFeedHelperViewModel @Inject constructor(
         }
     }
 
+    fun getFeedMetaData() {
+        viewModelScope.launchIO {
+            //get data from db
+            val feedMetaDataEntity =
+                configurationRepository.getConfiguration(ConfigurationType.FEED_METADATA.value)
+
+            //if not null
+            feedMetaDataEntity?.let {
+                val valueString = it.value
+                //convert to JSON object
+                val value = JSONObject(valueString)
+
+                //check value has value
+                if (value.has(POST_KEY)) {
+                    val variable = value.getString(POST_KEY)
+                    postAsVariable = variable
+                    _postVariable.postValue(variable)
+                } else {
+                    postAsVariable = POST_KEY
+                    _postVariable.postValue(POST_KEY)
+                }
+            }
+        }
+    }
+
+    fun getPostVariable(): String {
+        return postAsVariable
+    }
 
     /**
      * Triggers event when the user tags someone

@@ -9,7 +9,8 @@ class DeleteExtras private constructor(
     val entityType: Int,
     val postId: String,
     val commentId: String?,
-    val parentCommentId: String?
+    val parentCommentId: String?,
+    val postAsVariable: String
 ) : Parcelable {
 
     class Builder {
@@ -17,6 +18,7 @@ class DeleteExtras private constructor(
         private var postId: String = ""
         private var commentId: String? = null
         private var parentCommentId: String? = null
+        private var postAsVariable: String = ""
 
         fun entityType(@DeleteType entityType: Int) = apply { this.entityType = entityType }
         fun postId(postId: String) = apply { this.postId = postId }
@@ -25,11 +27,14 @@ class DeleteExtras private constructor(
         fun parentCommentId(parentCommentId: String?) =
             apply { this.parentCommentId = parentCommentId }
 
+        fun postAsVariable(postAsVariable: String) = apply { this.postAsVariable = postAsVariable }
+
         fun build() = DeleteExtras(
             entityType,
             postId,
             commentId,
-            parentCommentId
+            parentCommentId,
+            postAsVariable
         )
     }
 
@@ -38,5 +43,6 @@ class DeleteExtras private constructor(
             .postId(postId)
             .commentId(commentId)
             .parentCommentId(parentCommentId)
+            .postAsVariable(postAsVariable)
     }
 }
