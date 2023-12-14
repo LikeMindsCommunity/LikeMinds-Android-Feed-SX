@@ -17,8 +17,8 @@ object LikeMindsFeedUI {
      **/
     fun initLikeMindsFeedUI(
         application: Application,
-        lmUICallback: LMFeedUICallback,
-        brandingRequest: SetFeedBrandingRequest
+        lmUICallback: LMFeedUICallback?,
+        brandingRequest: SetFeedBrandingRequest?
     ) {
         Log.d(SDKApplication.LOG_TAG, "initiate LikeMindsFeedUI called")
 
