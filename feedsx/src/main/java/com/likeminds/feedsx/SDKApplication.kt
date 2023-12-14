@@ -2,9 +2,7 @@ package com.likeminds.feedsx
 
 import android.app.Application
 import android.content.Context
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amazonaws.mobile.client.Callback
-import com.amazonaws.mobile.client.UserStateDetails
+import com.amazonaws.mobile.client.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.likeminds.feedsx.branding.model.LMFeedBranding
 import com.likeminds.feedsx.branding.model.SetFeedBrandingRequest
@@ -66,8 +64,8 @@ class SDKApplication : LMCallback {
 
     fun initSDKApplication(
         application: Application,
-        lmUICallback: LMFeedUICallback,
-        brandingRequest: SetFeedBrandingRequest
+        lmUICallback: LMFeedUICallback?,
+        brandingRequest: SetFeedBrandingRequest?
     ) {
         LMFeedClient.Builder(application)
             .lmCallback(this)
@@ -79,8 +77,9 @@ class SDKApplication : LMCallback {
     }
 
     // sets branding to the app
-    fun setupBranding(setFeedBrandingRequest: SetFeedBrandingRequest) {
-        LMFeedBranding.setBranding(setFeedBrandingRequest)
+    fun setupBranding(setFeedBrandingRequest: SetFeedBrandingRequest?) {
+        val updatedBrandingRequest = setFeedBrandingRequest ?: SetFeedBrandingRequest.Builder().build()
+        LMFeedBranding.setBranding(updatedBrandingRequest)
     }
 
     private fun initAWSMobileClient(applicationContext: Context) {
