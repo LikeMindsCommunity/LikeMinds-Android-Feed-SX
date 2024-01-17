@@ -342,6 +342,7 @@ class LMFeedCreatePostFragment :
             tvPostDone.setOnClickListener {
                 val text = binding.etPostContent.text
                 val updatedText = memberTagging.replaceSelectedMembers(text).trim()
+                ViewUtils.hideKeyboard(binding.root)
                 if (selectedMediaUris.isNotEmpty()) {
                     handlePostButton(clickable = true, showProgress = true)
                     viewModel.addPost(
