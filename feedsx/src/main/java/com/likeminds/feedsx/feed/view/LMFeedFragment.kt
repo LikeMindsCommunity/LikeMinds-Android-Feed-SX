@@ -814,11 +814,16 @@ class LMFeedFragment :
         val postAsVariable = lmFeedHelperViewModel.getPostVariable()
         binding.layoutNoPost.apply {
             //heading
-            tvNoPostHeading.text = postAsVariable.pluralizeOrCapitalize(WordAction.ALL_SMALL_PLURAL)
+            tvNoPostHeading.text = getString(
+                R.string.no_s_to_show,
+                postAsVariable.pluralizeOrCapitalize(WordAction.ALL_SMALL_PLURAL)
+            )
 
             //subheading
-            tvNoPostSubHeading.text =
+            tvNoPostSubHeading.text = getString(
+                R.string.be_the_first_one_to_s_here,
                 postAsVariable.pluralizeOrCapitalize(WordAction.ALL_SMALL_SINGULAR)
+            )
 
             //fab
             fabNewPost.text = getString(
