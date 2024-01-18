@@ -78,6 +78,41 @@ object LikeMindsFeedUI {
         transaction.commitNowAllowingStateLoss()
     }
 
+    /**
+     * Call this function to initiate feed in the client's app
+     * this function will show home screen of the sdk
+     *
+     * @param apiKey : API key of the community
+     * @param userName : Name of the user
+     * @param userId : user id of the user
+     * @param isGuest | nullable: is user a guest user of not
+     * @return instance of inflated LMFeedFragment
+     **/
+    fun initFeed(
+        apiKey: String,
+        userName: String,
+        userId: String,
+        isGuest: Boolean
+    ): LMFeedFragment {
+        Log.d(SDKApplication.LOG_TAG, "initiate feed called")
+        Log.d(
+            SDKApplication.LOG_TAG, """
+            user_name: $userName
+            user id: $userId
+            isGuest: $isGuest
+        """.trimIndent()
+        )
+
+        val extras = LMFeedExtras.Builder()
+            .apiKey(apiKey)
+            .uuid(userId)
+            .userName(userName)
+            .isGuest(isGuest)
+            .build()
+
+        return LMFeedFragment.getInstance(extras)
+    }
+
     fun setBranding(brandingRequest: SetFeedBrandingRequest) {
         val sdk = SDKApplication.getInstance()
         sdk.setupBranding(brandingRequest)
