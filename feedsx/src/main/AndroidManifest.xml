@@ -19,37 +19,45 @@
         <activity
             android:name="com.likeminds.feedsx.media.view.LMFeedMediaPickerActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LMFeedAppTheme.NoActionBar" />
         <activity
             android:name="com.likeminds.feedsx.report.view.LMFeedReportActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LMFeedAppTheme.NoActionBar" />
         <activity
             android:name="com.likeminds.feedsx.post.create.view.LMFeedCreatePostActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:theme="@style/LMFeedAppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.likeminds.feedsx.post.edit.view.LMFeedEditPostActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LMFeedAppTheme.NoActionBar" />
         <activity
             android:name="com.likeminds.feedsx.likes.view.LMFeedLikesActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LMFeedAppTheme.NoActionBar" />
         <activity
             android:name="com.likeminds.feedsx.notificationfeed.view.LMFeedNotificationFeedActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LMFeedAppTheme.NoActionBar" />
 
         <activity
             android:name="com.likeminds.feedsx.post.detail.view.PostDetailActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LMFeedAppTheme.NoActionBar" />
 
         <activity
             android:name=".topic.view.LMFeedTopicSelectionActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LMFeedAppTheme.NoActionBar" />
     </application>
 </manifest>
