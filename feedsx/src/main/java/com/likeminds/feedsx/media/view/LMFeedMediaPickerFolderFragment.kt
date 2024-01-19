@@ -71,7 +71,7 @@ class LMFeedMediaPickerFolderFragment :
         super.setUpViews()
 
         binding.toolbarColor = LMFeedBranding.getToolbarColor()
-        setupMenu()
+        setHasOptionsMenu(true)
         initializeUI()
         initializeListeners()
         viewModel.fetchAllFolders(requireContext(), mediaPickerExtras.mediaTypes)
@@ -99,60 +99,49 @@ class LMFeedMediaPickerFolderFragment :
         }
     }
 
-    // sets up the menu item
-    private fun setupMenu() {
-        // The usage of an interface lets you inject your own implementation
-        val menuHost: MenuHost = requireActivity()
+    @SuppressLint("RestrictedApi")
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
 
-        // Add menu items without using the Fragment Menu APIs
-        // Note how we can tie the MenuProvider to the viewLifecycleOwner
-        // and an optional Lifecycle.State (here, RESUMED) to indicate when
-        // the menu should be visible
-        menuHost.addMenuProvider(object : MenuProvider {
-            @SuppressLint("RestrictedApi")
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                appsList.forEachIndexed { index, localAppData ->
-                    menu.add(0, localAppData.appId, index, localAppData.appName)
-                    menu.getItem(index).icon = localAppData.appIcon
-                }
-                if (menu is MenuBuilder) {
-                    menu.setOptionalIconsVisible(true)
-                }
+        appsList.forEachIndexed { index, localAppData ->
+            menu.add(0, localAppData.appId, index, localAppData.appName)
+            menu.getItem(index).icon = localAppData.appIcon
+        }
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val localAppData = appsList.find {
+            it.appId == item.itemId
+        }
+
+        return if (localAppData != null) {
+            val extra = MediaPickerResult.Builder()
+                .mediaPickerResultType(MEDIA_RESULT_BROWSE)
+                .mediaTypes(mediaPickerExtras.mediaTypes)
+                .allowMultipleSelect(mediaPickerExtras.allowMultipleSelect)
+                .browseClassName(
+                    Pair(
+                        localAppData.resolveInfo.activityInfo.applicationInfo.packageName,
+                        localAppData.resolveInfo.activityInfo.name
+                    )
+                )
+                .build()
+            val intent = Intent().apply {
+                putExtras(Bundle().apply {
+                    putParcelable(
+                        ARG_MEDIA_PICKER_RESULT, extra
+                    )
+                })
             }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                val localAppData = appsList.find {
-                    it.appId == menuItem.itemId
-                }
-
-                return if (localAppData != null) {
-                    val extra = MediaPickerResult.Builder()
-                        .mediaPickerResultType(MEDIA_RESULT_BROWSE)
-                        .mediaTypes(mediaPickerExtras.mediaTypes)
-                        .allowMultipleSelect(mediaPickerExtras.allowMultipleSelect)
-                        .browseClassName(
-                            Pair(
-                                localAppData.resolveInfo.activityInfo.applicationInfo.packageName,
-                                localAppData.resolveInfo.activityInfo.name
-                            )
-                        )
-                        .build()
-                    val intent = Intent().apply {
-                        putExtras(Bundle().apply {
-                            putParcelable(
-                                ARG_MEDIA_PICKER_RESULT, extra
-                            )
-                        })
-                    }
-                    requireActivity().setResult(Activity.RESULT_OK, intent)
-                    requireActivity().finish()
-                    true
-                } else {
-                    false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+            requireActivity().setResult(Activity.RESULT_OK, intent)
+            requireActivity().finish()
+            true
+        } else {
+            false
+        }
     }
 
     private fun getExternalAppList() {

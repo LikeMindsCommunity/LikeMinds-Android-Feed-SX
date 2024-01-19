@@ -10,7 +10,7 @@ class ConfigurationEntity constructor(
     var type: String,
     @ColumnInfo(name = "description")
     var description: String,
-    @ColumnInfo("value")
+    @ColumnInfo(name = "value")
     var value: String
 ) {
     class Builder {
