@@ -72,7 +72,7 @@ class LMFeedMediaPickerDocumentFragment :
         super.setUpViews()
 
         binding.toolbarColor = LMFeedBranding.getToolbarColor()
-        setupMenu()
+        setHasOptionsMenu(true)
         initializeUI()
         initializeListeners()
         viewModel.fetchAllDocuments(requireContext()).observe(viewLifecycleOwner) {
@@ -80,39 +80,24 @@ class LMFeedMediaPickerDocumentFragment :
         }
     }
 
-    // sets up the menu item
-    private fun setupMenu() {
-        // The usage of an interface lets you inject your own implementation
-        val menuHost: MenuHost = requireActivity()
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.media_picker_document_menu, menu)
+        updateMenu(menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 
-        // Add menu items without using the Fragment Menu APIs
-        // Note how we can tie the MenuProvider to the viewLifecycleOwner
-        // and an optional Lifecycle.State (here, RESUMED) to indicate when
-        // the menu should be visible
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                menuInflater.inflate(R.menu.media_picker_document_menu, menu)
-                updateMenu(menu)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_search -> {
+                showSearchToolbar()
             }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
-                when (menuItem.itemId) {
-                    R.id.menu_item_search -> {
-                        showSearchToolbar()
-                    }
-
-                    R.id.menu_item_sort -> {
-                        val menuItemView = requireActivity().findViewById<View>(menuItem.itemId)
-                        showSortingPopupMenu(menuItemView)
-                    }
-
-                    else -> return false
-                }
-                return true
+            R.id.menu_item_sort -> {
+                val menuItemView = requireActivity().findViewById<View>(item.itemId)
+                showSortingPopupMenu(menuItemView)
             }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+            else -> return false
+        }
+        return true
     }
 
     private fun updateMenu(menu: Menu) {

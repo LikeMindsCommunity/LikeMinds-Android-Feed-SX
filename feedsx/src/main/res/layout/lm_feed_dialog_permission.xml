@@ -52,7 +52,7 @@
                     android:lineSpacingExtra="4sp"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    app:fontType="regular"
+                    app:lm_feed_fontType="regular"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewIcon"
@@ -69,7 +69,7 @@
                     android:textAllCaps="true"
                     android:textColor="@color/teal_two"
                     android:textSize="13sp"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewMessage"
@@ -86,7 +86,7 @@
                     android:textAllCaps="true"
                     android:textColor="@color/black_40"
                     android:textSize="13sp"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constraintEnd_toStartOf="@+id/textViewPositiveButton"
                     app:layout_constraintTop_toTopOf="@+id/textViewPositiveButton" />
 

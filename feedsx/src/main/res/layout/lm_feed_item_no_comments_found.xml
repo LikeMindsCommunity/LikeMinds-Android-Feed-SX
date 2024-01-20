@@ -16,7 +16,7 @@
             android:textColor="@color/dark_grey"
             android:textSize="16sp"
             android:visibility="visible"
-            app:fontType="regular"
+            app:lm_feed_fontType="regular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +30,7 @@
             android:textColor="@color/grey"
             android:textSize="14sp"
             android:visibility="visible"
-            app:fontType="regular"
+            app:lm_feed_fontType="regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="LikeMindsButton">
-        <attr name="font_type" format="string" />
-        <attr name="text_type" format="string" />
-        <attr name="button_type" format="string"/>
+    <declare-styleable name="LMFeedButton">
+        <attr name="lm_feed_font_type" format="string" />
+        <attr name="lm_feed_text_type" format="string" />
+        <attr name="lm_feed_button_type" format="string"/>
     </declare-styleable>
 
-    <declare-styleable name="LikeMindsExtendedFAB">
-        <attr name="font_Style" format="string" />
+    <declare-styleable name="LMFeedExtendedFAB">
+        <attr name="lm_feed_font_Style" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="LikeMindsTextView">
-        <attr name="fontType" format="string" />
-        <attr name="textType" format="string" />
+    <declare-styleable name="LMFeedTextView">
+        <attr name="lm_feed_fontType" format="string" />
+        <attr name="lm_feed_textType" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="LikeMindsEditText">
-        <attr name="font_style" format="string" />
-        <attr name="et_type" format="string" />
+    <declare-styleable name="LMFeedEditText">
+        <attr name="lm_feed_font_style" format="string" />
+        <attr name="lm_feed_et_type" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="AnimatedRecyclerView">
-        <attr name="layoutAnimation" format="reference" />
-        <attr name="animationDuration" format="integer" />
-        <attr name="layoutManagerOrientation" format="integer">
+    <declare-styleable name="LMFeedAnimatedRecyclerView">
+        <attr name="lm_feed_layoutAnimation" format="reference" />
+        <attr name="lm_feed_animationDuration" format="integer" />
+        <attr name="lm_feed_layoutManagerOrientation" format="integer">
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
         </attr>
-        <attr name="layoutManagerReverse" format="boolean" />
-        <attr name="layoutManagerType" format="integer">
+        <attr name="lm_feed_layoutManagerReverse" format="boolean" />
+        <attr name="lm_feed_layoutManagerType" format="integer">
             <enum name="linear" value="0" />
             <enum name="grid" value="1" />
         </attr>
-        <attr name="gridLayoutManagerColumns" format="integer" />
+        <attr name="lm_feed_gridLayoutManagerColumns" format="integer" />
     </declare-styleable>
 
 </resources>

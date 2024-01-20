@@ -60,13 +60,13 @@
                     android:singleLine="true"
                     android:text="@string/documents"
                     android:textSize="20sp"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constraintBottom_toTopOf="@+id/tv_selected_count"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed"
-                    app:textType="title" />
+                    app:lm_feed_textType="title" />
 
                 <com.likeminds.feedsx.branding.customview.LMFeedTextView
                     android:id="@+id/tv_selected_count"

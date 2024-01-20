@@ -27,10 +27,10 @@ internal class LMFeedButton : MaterialButton {
 
     private fun initiate(attrs: AttributeSet?) {
         // fonts
-        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsButton)
-        val fontStyle = array.getString(R.styleable.LikeMindsButton_font_type)
-        val buttonType = array.getString(R.styleable.LikeMindsButton_button_type)
-        val textType = array.getString(R.styleable.LikeMindsButton_text_type)
+        val array = context.obtainStyledAttributes(attrs, R.styleable.LMFeedButton)
+        val fontStyle = array.getString(R.styleable.LMFeedButton_lm_feed_font_type)
+        val buttonType = array.getString(R.styleable.LMFeedButton_lm_feed_button_type)
+        val textType = array.getString(R.styleable.LMFeedButton_lm_feed_text_type)
         typeface = FeedBrandingUtil.getTypeFace(context, fontStyle)
         array.recycle()
 

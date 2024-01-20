@@ -27,8 +27,8 @@ internal class LMFeedExtendedFAB : ExtendedFloatingActionButton {
 
     private fun initiate(attrs: AttributeSet?) {
         // fonts
-        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsExtendedFAB)
-        val fontStyle = array.getString(R.styleable.LikeMindsExtendedFAB_font_Style)
+        val array = context.obtainStyledAttributes(attrs, R.styleable.LMFeedExtendedFAB)
+        val fontStyle = array.getString(R.styleable.LMFeedExtendedFAB_lm_feed_font_Style)
         this.typeface = FeedBrandingUtil.getTypeFace(context, fontStyle)
         array.recycle()
 

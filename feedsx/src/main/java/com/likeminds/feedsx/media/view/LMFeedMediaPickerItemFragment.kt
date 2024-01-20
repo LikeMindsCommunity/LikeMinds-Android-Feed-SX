@@ -6,9 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.likeminds.feedsx.R
@@ -73,7 +70,7 @@ class LMFeedMediaPickerItemFragment :
         super.setUpViews()
         binding.toolbarColor = LMFeedBranding.getToolbarColor()
         if (mediaPickerItemExtras.allowMultipleSelect) {
-            setupMenu()
+            setHasOptionsMenu(true)
         }
         initializeUI()
         initializeListeners()
@@ -87,33 +84,20 @@ class LMFeedMediaPickerItemFragment :
         }
     }
 
-    // sets up the menu item
-    private fun setupMenu() {
-        // The usage of an interface lets you inject your own implementation
-        val menuHost: MenuHost = requireActivity()
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.media_picker_item_menu, menu)
+    }
 
-        // Add menu items without using the Fragment Menu APIs
-        // Note how we can tie the MenuProvider to the viewLifecycleOwner
-        // and an optional Lifecycle.State (here, RESUMED) to indicate when
-        // the menu should be visible
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                menuInflater.inflate(R.menu.media_picker_item_menu, menu)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.select_multiple -> {
+                startActionMode()
+                true
             }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
-                return when (menuItem.itemId) {
-                    R.id.select_multiple -> {
-                        startActionMode()
-                        true
-                    }
-
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+            else -> false
+        }
     }
 
     private fun initializeUI() {
