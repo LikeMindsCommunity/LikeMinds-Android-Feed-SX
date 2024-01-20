@@ -54,20 +54,20 @@ class LMFeedAnimatedRecyclerView : RecyclerView {
     @SuppressLint("Recycle", "WrongConstant")
     private fun init(context: Context, attrs: AttributeSet?) {
         val typedArray =
-            context.obtainStyledAttributes(attrs, R.styleable.AnimatedRecyclerView, 0, 0)
+            context.obtainStyledAttributes(attrs, R.styleable.LMFeedAnimatedRecyclerView, 0, 0)
         orientation = typedArray.getInt(
-            R.styleable.AnimatedRecyclerView_layoutManagerOrientation,
+            R.styleable.LMFeedAnimatedRecyclerView_lm_feed_layoutManagerOrientation,
             orientation
         )
         reverse =
-            typedArray.getBoolean(R.styleable.AnimatedRecyclerView_layoutManagerReverse, reverse)
+            typedArray.getBoolean(R.styleable.LMFeedAnimatedRecyclerView_lm_feed_layoutManagerReverse, reverse)
         animationDuration =
-            typedArray.getInt(R.styleable.AnimatedRecyclerView_animationDuration, animationDuration)
+            typedArray.getInt(R.styleable.LMFeedAnimatedRecyclerView_lm_feed_animationDuration, animationDuration)
         layoutManagerType =
-            typedArray.getInt(R.styleable.AnimatedRecyclerView_layoutManagerType, layoutManagerType)
+            typedArray.getInt(R.styleable.LMFeedAnimatedRecyclerView_lm_feed_layoutManagerType, layoutManagerType)
         columns =
-            typedArray.getInt(R.styleable.AnimatedRecyclerView_gridLayoutManagerColumns, columns)
-        animation = typedArray.getResourceId(R.styleable.AnimatedRecyclerView_layoutAnimation, -1)
+            typedArray.getInt(R.styleable.LMFeedAnimatedRecyclerView_lm_feed_gridLayoutManagerColumns, columns)
+        animation = typedArray.getResourceId(R.styleable.LMFeedAnimatedRecyclerView_lm_feed_layoutAnimation, -1)
         if (animationController == null) animationController =
             if (animation != -1) AnimationUtils.loadLayoutAnimation(
                 getContext(),

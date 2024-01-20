@@ -32,7 +32,7 @@
             android:text="@string/creating_s"
             android:textColor="@color/dark_grey"
             android:textSize="14sp"
-            app:fontType="regular"
+            app:lm_feed_fontType="regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_post_thumbnail"
             app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +63,7 @@
             android:textColor="@color/grey"
             android:textSize="14sp"
             android:visibility="gone"
-            app:fontType="regular"
+            app:lm_feed_fontType="regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

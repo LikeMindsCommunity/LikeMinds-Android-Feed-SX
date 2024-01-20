@@ -36,7 +36,7 @@
                     android:textColor="@color/black_87"
                     android:textSize="16sp"
                     android:textStyle="normal"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -51,7 +51,7 @@
                     android:textColor="@color/grey"
                     android:textSize="15sp"
                     android:textStyle="normal"
-                    app:fontType="regular"
+                    app:lm_feed_fontType="regular"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_title"
@@ -71,7 +71,7 @@
                     android:textColor="@color/black_40"
                     android:textSize="13sp"
                     android:textStyle="normal"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constrainedHeight="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tv_delete"
@@ -91,13 +91,13 @@
                     android:textColor="@color/black_20"
                     android:textSize="13sp"
                     android:textStyle="normal"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constrainedHeight="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_description"
                     app:textAllCaps="true"
-                    app:textType="special" />
+                    app:lm_feed_textType="special" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>

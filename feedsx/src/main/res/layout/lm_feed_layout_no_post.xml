@@ -30,7 +30,7 @@
             android:text="@string/no_s_to_show"
             android:textColor="@color/black"
             android:textSize="18sp"
-            app:fontType="medium"
+            app:lm_feed_fontType="medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_post" />
@@ -43,7 +43,7 @@
             android:text="@string/be_the_first_one_to_s_here"
             android:textColor="@color/black"
             android:textSize="12sp"
-            app:fontType="regular"
+            app:lm_feed_fontType="regular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_no_post_heading" />
@@ -58,7 +58,7 @@
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="12sp"
-            app:font_Style="medium"
+            app:lm_feed_font_Style="medium"
             app:icon="@drawable/ic_new_post_plus"
             app:iconGravity="start"
             app:iconSize="20dp"

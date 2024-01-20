@@ -27,17 +27,17 @@ internal class LMFeedTextView : AppCompatTextView {
 
     private fun initiate(attrs: AttributeSet?) {
         // fonts
-        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsTextView)
+        val array = context.obtainStyledAttributes(attrs, R.styleable.LMFeedTextView)
         typeface = FeedBrandingUtil.getTypeFace(
             context,
-            array.getString(R.styleable.LikeMindsTextView_fontType)
+            array.getString(R.styleable.LMFeedTextView_lm_feed_fontType)
         )
 
         //text color
         setTextColor(
             FeedBrandingUtil.getTextColor(
                 this.currentTextColor,
-                array.getString(R.styleable.LikeMindsTextView_textType)
+                array.getString(R.styleable.LMFeedTextView_lm_feed_textType)
             )
         )
 

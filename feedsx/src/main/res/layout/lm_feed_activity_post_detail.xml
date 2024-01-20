@@ -57,12 +57,12 @@
                     android:maxLines="1"
                     android:textColor="@color/black"
                     android:textSize="20sp"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constraintBottom_toTopOf="@id/tv_toolbar_sub_title"
                     app:layout_constraintStart_toEndOf="@+id/iv_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed"
-                    app:textType="title"
+                    app:lm_feed_textType="title"
                     tools:text="Post" />
 
                 <com.likeminds.feedsx.branding.customview.LMFeedTextView
@@ -74,12 +74,12 @@
                     android:singleLine="true"
                     android:textColor="@color/grey"
                     android:textSize="14sp"
-                    app:fontType="regular"
+                    app:lm_feed_fontType="regular"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_toolbar_title"
                     app:layout_constraintTop_toBottomOf="@id/tv_toolbar_title"
                     app:layout_constraintVertical_chainStyle="packed"
-                    app:textType="subtitle"
+                    app:lm_feed_textType="subtitle"
                     tools:text="14 comments" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

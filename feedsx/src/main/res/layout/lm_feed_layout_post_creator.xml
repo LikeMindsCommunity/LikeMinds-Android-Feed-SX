@@ -28,7 +28,7 @@
             android:maxLines="1"
             android:textColor="@color/raisin_black"
             android:textSize="16sp"
-            app:fontType="medium"
+            app:lm_feed_fontType="medium"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/creator_image"
             app:layout_constraintStart_toEndOf="@+id/creator_image"

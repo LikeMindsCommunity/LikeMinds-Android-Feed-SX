@@ -24,7 +24,7 @@
             android:lineSpacingExtra="1sp"
             android:textColor="@color/raisin_black"
             android:textSize="14sp"
-            app:fontType="medium"
+            app:lm_feed_fontType="medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/post_comments_separator"

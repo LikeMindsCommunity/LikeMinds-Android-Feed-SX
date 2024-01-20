@@ -58,12 +58,12 @@
                     android:singleLine="true"
                     android:text="@string/create_a_s"
                     android:textSize="20sp"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed"
-                    app:textType="title" />
+                    app:lm_feed_textType="title" />
 
                 <com.likeminds.feedsx.branding.customview.LMFeedTextView
                     android:id="@+id/tv_post_done"
@@ -76,7 +76,7 @@
                     android:text="@string/create"
                     android:textColor="@color/grey"
                     android:textSize="16sp"
-                    app:fontType="medium"
+                    app:lm_feed_fontType="medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

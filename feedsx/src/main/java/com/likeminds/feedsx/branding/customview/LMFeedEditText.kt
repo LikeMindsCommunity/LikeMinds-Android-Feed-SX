@@ -18,14 +18,14 @@ internal class LMFeedEditText @JvmOverloads constructor(
 
     init {
         // fonts
-        val array = context.obtainStyledAttributes(attributeSet, R.styleable.LikeMindsEditText)
+        val array = context.obtainStyledAttributes(attributeSet, R.styleable.LMFeedEditText)
         this.typeface = FeedBrandingUtil.getTypeFace(
             context,
-            array.getString(R.styleable.LikeMindsEditText_font_style)
+            array.getString(R.styleable.LMFeedEditText_lm_feed_font_style)
         )
 
         //edittext background color
-        val etType = array.getString(R.styleable.LikeMindsEditText_et_type)
+        val etType = array.getString(R.styleable.LMFeedEditText_lm_feed_et_type)
         if (etType.equals("special"))
             this.backgroundTintList = ColorStateList.valueOf(LMFeedBranding.getButtonsColor())
 
