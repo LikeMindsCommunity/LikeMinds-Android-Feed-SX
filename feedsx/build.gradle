@@ -6,6 +6,14 @@ plugins {
     id 'androidx.navigation.safeargs'
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'community.likeminds'
+    PUBLISH_VERSION = "$feed_versions.app_version_major.$feed_versions.app_version_minor.$feed_versions.app_version_patch"
+    PUBLISH_ARTIFACT_ID = 'likemindsfeedsx'
+}
+
+apply from: '../publish-helper.gradle'
+
 android {
     namespace 'com.likeminds.feedsx'
     compileSdkVersion feed_versions.compile_sdk
