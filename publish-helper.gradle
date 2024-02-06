@@ -1,0 +1,115 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+
+                from components.release
+
+                groupId PUBLISH_GROUP_ID
+                version PUBLISH_VERSION
+                artifactId PUBLISH_ARTIFACT_ID
+                pom {
+                    name = PUBLISH_ARTIFACT_ID
+                    description = 'LikeMinds Feed SX'
+                    url = 'https://github.com/LikeMindsCommunity/LikeMinds-Android-Feed-SX'
+                    licenses {
+                        license {
+                            name = 'LikeMinds License'
+                            url = 'https://likeminds.community/privacy-policy/'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:github.com/LikeMindsCommunity/LikeMinds-Android-Feed-SX.git'
+                        developerConnection = 'scm:git:ssh://LikeMindsCommunity/LikeMinds-Android-Feed-SX.git'
+                        url = 'https://github.com/LikeMindsCommunity/LikeMinds-Android-Feed-SX/tree/master'
+                    }
+                    developers {
+                        developer {
+                            id = 'NateshR'
+                            name = 'Natesh Relhan'
+                            email = 'nateshrelhan@gmail.com'
+                        }
+                        developer {
+                            id = 'ishaan1607'
+                            name = 'Ishaan Jain'
+                            email = 'ishaan.jain@likeminds.community'
+                        }
+                        developer {
+                            id = 'sidcr7-likeminds'
+                            name = 'Siddharth Dubey'
+                            email = 'siddharth.dubey@likeminds.community'
+                        }
+                    }
+                }
+            }
+
+            debug(MavenPublication) {
+
+                from components.debug
+
+                groupId PUBLISH_GROUP_ID
+                version PUBLISH_VERSION
+                artifactId PUBLISH_ARTIFACT_ID
+                pom {
+                    name = PUBLISH_ARTIFACT_ID
+                    description = 'LikeMinds Feed official Android SDK'
+                    url = 'https://github.com/NateshR/LikeMinds-Android-Feed-SDK'
+                    licenses {
+                        license {
+                            name = 'LikeMinds License'
+                            url = 'https://likeminds.community/privacy-policy/'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:github.com/LikeMindsCommunity/LikeMinds-Android-Feed-SDK.git'
+                        developerConnection = 'scm:git:ssh://LikeMindsCommunity/LikeMinds-Android-Feed-SDK.git'
+                        url = 'https://github.com/LikeMindsCommunity/LikeMinds-Android-Feed-SDK/tree/master'
+                    }
+                    developers {
+                        developer {
+                            id = 'NateshR'
+                            name = 'Natesh Relhan'
+                            email = 'nateshrelhan@gmail.com'
+                        }
+                        developer {
+                            id = 'ishaan1607'
+                            name = 'Ishaan Jain'
+                            email = 'ishaan.jain@likeminds.community'
+                        }
+                        developer {
+                            id = 'sidcr7-likeminds'
+                            name = 'Siddharth Dubey'
+                            email = 'siddharth.dubey@likeminds.community'
+                        }
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = "sonatype"
+                def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useInMemoryPgpKeys(
+            rootProject.ext["signing.keyId"],
+            rootProject.ext["signing.key"],
+            rootProject.ext["signing.password"],
+    )
+    sign publishing.publications
+}
