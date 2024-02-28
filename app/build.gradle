@@ -13,7 +13,7 @@ android {
     compileSdkVersion feed_versions.compile_sdk
 
     defaultConfig {
-        applicationId "com.likeminds.feedsampleapp"
+        applicationId "com.likeminds.feedsampleapp.social"
         minSdk feed_versions.min_sdk
         targetSdk feed_versions.target_sdk
         versionCode feed_versions.app_version_code

@@ -30,9 +30,9 @@ feed_versions.dagger = '2.48'
 feed_versions.stream = '1.2.1'
 feed_versions.work_manager = '2.7.1'
 feed_versions.gson = '2.8.6'
-feed_versions.aws_s3 = '2.47.0'
+feed_versions.aws_s3 = '2.73.0'
 feed_versions.room = '2.4.3'
-feed_versions.firebase = '30.1.0'
+feed_versions.firebase = '32.2.3'
 ext.feed_versions = feed_versions
 
 
