@@ -17,3 +17,19 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
     id 'com.google.devtools.ksp' version '1.8.0-1.0.9' apply false
 }
+
+File secretPropsFile = project.rootProject.file('local.properties')
+if (secretPropsFile.exists()) {
+    Properties p = new Properties()
+    p.load(new FileInputStream(secretPropsFile))
+    p.each { name, value ->
+        ext[name] = value
+    }
+} else {
+    ext['signing.keyId'] = System.getenv('KEY_ID')
+    ext['signing.password'] = System.getenv('PASSWORD')
+    ext['signing.key'] = System.getenv('KEY')
+    ext['ossrhUsername'] = System.getenv('OSSRH_USERNAME')
+    ext['ossrhPassword'] = System.getenv('OSSRH_PASSWORD')
+    ext["sonatypeStagingProfileId"] = System.getenv('SONATYPE_STAGING_PROFILE_ID')
+}
